@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lixy.dataextract.dao.HandlerTaskMapper">
+  <resultMap id="BaseResultMap" type="com.lixy.dataextract.entity.HandlerTask">
+    <id column="task_id" jdbcType="INTEGER" property="taskId" />
+    <result column="commit_id" jdbcType="INTEGER" property="commitId" />
+    <result column="last_handler_time" jdbcType="TIMESTAMP" property="lastHandleTime" />
+    <result column="cron_exp" jdbcType="VARCHAR" property="cronExp" />
+    <result column="task_period" jdbcType="VARCHAR" property="taskPeriod" />
+    <result column="task_status" jdbcType="INTEGER" property="taskStatus" />
+    <result column="task_type" jdbcType="INTEGER" property="taskType" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    task_id, commit_id, last_handler_time, cron_exp,task_period,task_status,task_type, create_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from handler_task
+    where task_id = #{taskId,jdbcType=INTEGER}
+  </select>
+  <select id="findCountByCommitId" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    select
+    count(*)
+    from handler_task
+    where commit_id = #{commitId}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from handler_task
+    where task_id = #{taskId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.lixy.dataextract.entity.HandlerTask">
+    insert into handler_task (commit_id, last_handler_time, cron_exp,task_period,task_status,task_type)
+    values (#{commitId,jdbcType=INTEGER}, #{lastHandleTime,jdbcType=TIMESTAMP}, #{cronExp,jdbcType=VARCHAR},
+     #{taskPeriod},#{taskStatus,jdbcType=INTEGER},#{taskType})
+  </insert>
+  <insert id="insertSelective" parameterType="com.lixy.dataextract.entity.HandlerTask" useGeneratedKeys="true" keyProperty="taskId" keyColumn="task_id">
+    insert into handler_task
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="commitId != null">
+        commit_id,
+      </if>
+      <if test="lastHandleTime != null">
+        last_handler_time,
+      </if>
+      <if test="cronExp != null">
+        cron_exp,
+      </if>
+      <if test="taskPeriod != null">
+        task_period,
+      </if>
+      <if test="taskStatus != null">
+        task_status,
+      </if>
+      <if test="taskType != null">
+        task_type,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="commitId != null">
+        #{commitId,jdbcType=INTEGER},
+      </if>
+      <if test="lastHandleTime != null">
+        #{lastHandleTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cronExp != null">
+        #{cronExp,jdbcType=VARCHAR},
+      </if>
+      <if test="taskPeriod != null">
+        #{taskPeriod},
+      </if>
+      <if test="taskStatus != null">
+        #{taskStatus},
+      </if>
+      <if test="taskType != null">
+        #{taskType},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.lixy.dataextract.entity.HandlerTask">
+    update handler_task
+    <set>
+      <if test="commitId != null">
+        commit_id = #{commitId,jdbcType=INTEGER},
+      </if>
+      <if test="lastHandleTime != null">
+        last_handler_time = #{lastHandleTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cronExp != null">
+        cron_exp = #{cronExp,jdbcType=VARCHAR},
+      </if>
+      <if test="cronExp != null">
+        task_period = #{taskPeriod},
+      </if>
+      <if test="taskStatus != null">
+        task_status = #{taskStatus},
+      </if>
+      <if test="taskType != null">
+        task_type = #{taskType},
+      </if>
+    </set>
+    where task_id = #{taskId,jdbcType=INTEGER}
+  </update>
+
+  <select id="findTaskPage" resultType="com.lixy.dataextract.vo.TaskShowVo" parameterType="com.lixy.dataextract.vo.TaskSearchVo">
+    select
+     ht.task_id as taskId,
+     ht.task_period as taskPeriod,
+     ctr.table_name as tableName,
+     sd.db_name as dbName,
+     ht.task_status as taskStatus,
+     ht.task_type as taskType,
+     ht.last_handler_time as lastHandleTime
+    from handler_task ht
+    left join commit_table_record ctr on ht.commit_id=ctr.commit_id
+    left join sys_dbinfo sd on ctr.db_id = sd.dbinfo_id
+    where 1=1
+    <if test="tableName">
+      and ctr.table_name like concat(#{tableName},'%')
+    </if>
+    <if test="dbId">
+      and ctr.db_id = #{dbId}
+    </if>
+    order by ht.create_time asc
+  </select>
+
+</mapper>

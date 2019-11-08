@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lixy.dataextract.dao.CommitTableRecordMapper">
+  <resultMap id="BaseResultMap" type="com.lixy.dataextract.entity.CommitTableRecord">
+    <id column="commit_id" jdbcType="INTEGER" property="commitId" />
+    <result column="db_id" jdbcType="INTEGER" property="dbId" />
+    <result column="table_name" jdbcType="VARCHAR" property="tableName" />
+    <result column="path" jdbcType="VARCHAR" property="path" />
+    <result column="etl_col" jdbcType="VARCHAR" property="etlCol" />
+    <result column="data_type" jdbcType="TINYINT" property="dataType" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    commit_id, db_id, table_name, path, etl_col, data_type, create_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from commit_table_record
+    where commit_id = #{commitId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from commit_table_record
+    where commit_id = #{commitId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.lixy.dataextract.entity.CommitTableRecord">
+    insert into commit_table_record (db_id, table_name,
+      path, etl_col, data_type)
+    values (#{dbId,jdbcType=INTEGER}, #{tableName,jdbcType=VARCHAR},
+      #{path,jdbcType=VARCHAR}, #{etlCol,jdbcType=VARCHAR}, #{dataType,jdbcType=TINYINT})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.lixy.dataextract.entity.CommitTableRecord">
+    update commit_table_record
+    set db_id = #{dbId,jdbcType=INTEGER},
+      table_name = #{tableName,jdbcType=VARCHAR},
+      path = #{path,jdbcType=VARCHAR},
+      etl_col = #{etlCol,jdbcType=VARCHAR},
+      data_type = #{dataType,jdbcType=TINYINT},
+    where commit_id = #{commitId,jdbcType=INTEGER}
+  </update>
+
+  <select id="findPage" parameterType="com.lixy.dataextract.vo.CommitTableSearchVo" resultType="com.lixy.dataextract.entity.CommitTableRecord">
+    select
+    ctr.commit_id as commitId,
+    ctr.table_name as tableName,
+    ctr.etl_col as etlCol,
+    sd.db_name as dbName,
+    ctr.data_type as dataType,
+    ctr.create_time as createTime
+    from commit_table_record ctr
+    left join sys_dbinfo sd on  ctr.db_id = sd.dbinfo_id
+    where
+    1=1
+    <if test="dbId!=null">
+      and ctr.db_id = #{dbId}
+    </if>
+    <if test="tableName!=null">
+      and ctr.`table_name` like   concat(#{tableName},'%')
+    </if>
+    <if test="etlCol!=null">
+      and ctr.etl_col like concat(#{etlCol},'%')
+    </if>
+    <if test="dataType!=null">
+      and ctr.data_type = #{dataType}
+    </if>
+    order by ctr.create_time asc
+  </select>
+  <select id="findCountTableName" resultType="java.lang.Integer">
+    select
+     count(*)
+    from commit_table_record
+    where `table_name` = #{tableName}
+  </select>
+  <select id="selectCountByDbId" resultType="java.lang.Integer">
+    select
+     count(*)
+    from commit_table_record
+    where db_id = #{dbId}
+  </select>
+
+
+</mapper>

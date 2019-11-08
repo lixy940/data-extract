@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lixy.dataextract.dao.SysDBInfoMapper">
+    <resultMap id="BaseResultMap" type="com.lixy.dataextract.entity.SysDBInfo">
+        <id column="dbinfo_id" property="dbinfoId" jdbcType="INTEGER"/>
+        <result column="db_name" property="dbName" jdbcType="VARCHAR"/>
+        <result column="db_type" property="dbType" jdbcType="VARCHAR"/>
+        <result column="area_type" property="areaType" jdbcType="INTEGER"/>
+        <result column="db_ip" property="dbIp" jdbcType="VARCHAR"/>
+        <result column="db_port" property="dbPort" jdbcType="VARCHAR"/>
+        <result column="db_server_name" property="dbServerName" jdbcType="VARCHAR"/>
+        <result column="db_table_schema" property="dbTableSchema" jdbcType="VARCHAR"/>
+        <result column="db_relkind" property="dbRelkind" jdbcType="VARCHAR"/>
+        <result column="db_password" property="dbPassword" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="create_person_id" property="createPersonId" jdbcType="VARCHAR"/>
+        <result column="db_user" property="dbUser" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    dbinfo_id, db_name, db_type,area_type, db_ip, db_port, db_server_name,db_table_schema,db_relkind, db_password, status,
+    create_time, create_person_id,db_user
+  </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_dbinfo
+        where dbinfo_id = #{dbinfoId,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from sys_dbinfo
+    where dbinfo_id = #{dbinfoId,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" keyProperty="dbinfoId" useGeneratedKeys="true"
+            parameterType="com.lixy.dataextract.entity.SysDBInfo">
+    insert into sys_dbinfo ( db_name, db_type,area_type,
+      db_ip, db_port, db_server_name, db_table_schema,db_relkind,
+      db_password, status, create_person_id,db_user)
+    values ( #{dbName,jdbcType=VARCHAR}, #{dbType,jdbcType=VARCHAR},#{areaType,jdbcType=INTEGER},
+      #{dbIp,jdbcType=VARCHAR}, #{dbPort,jdbcType=VARCHAR}, #{dbServerName,jdbcType=VARCHAR}, #{dbTableSchema,jdbcType=VARCHAR},
+       #{dbRelkind,jdbcType=VARCHAR},#{dbPassword,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER},
+      #{createPersonId,jdbcType=VARCHAR}, #{dbUser,jdbcType=VARCHAR})
+  </insert>
+    <insert id="insertSelective" parameterType="com.lixy.dataextract.entity.SysDBInfo">
+        insert into sys_dbinfo
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+
+            <if test="dbName != null">
+                db_name,
+            </if>
+            <if test="dbType != null">
+                db_type,
+            </if>
+            <if test="areaType != null">
+                area_type,
+            </if>
+            <if test="dbIp != null">
+                db_ip,
+            </if>
+            <if test="dbPort != null">
+                db_port,
+            </if>
+            <if test="dbServerName != null">
+                db_server_name,
+            </if>
+            <if test="dbPassword != null">
+                db_password,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="createPersonId != null">
+                create_person_id,
+            </if>
+            <if test="dbUser != null">
+                db_user,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+
+            <if test="dbName != null">
+                #{dbName,jdbcType=VARCHAR},
+            </if>
+            <if test="dbType != null">
+                #{dbType,jdbcType=VARCHAR},
+            </if>
+            <if test="areaType != null">
+                #{areaType,jdbcType=INTEGER},
+            </if>
+            <if test="dbIp != null">
+                #{dbIp,jdbcType=VARCHAR},
+            </if>
+            <if test="dbPort != null">
+                #{dbPort,jdbcType=VARCHAR},
+            </if>
+            <if test="dbServerName != null">
+                #{dbServerName,jdbcType=VARCHAR},
+            </if>
+            <if test="dbPassword != null">
+                #{dbPassword,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=DATE},
+            </if>
+            <if test="createPersonId != null">
+                #{createPersonId,jdbcType=VARCHAR},
+            </if>
+            <if test="dbUser != null">
+                #{dbUser,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.lixy.dataextract.entity.SysDBInfo">
+        update sys_dbinfo
+        <set>
+            <if test="dbName != null">
+                db_name = #{dbName,jdbcType=VARCHAR},
+            </if>
+            <if test="dbType != null">
+                db_type = #{dbType,jdbcType=VARCHAR},
+            </if>
+            <if test="areaType != null">
+                area_type = #{areaType,jdbcType=INTEGER},
+            </if>
+            <if test="dbIp != null">
+                db_ip = #{dbIp,jdbcType=VARCHAR},
+            </if>
+            <if test="dbPort != null">
+                db_port = #{dbPort,jdbcType=VARCHAR},
+            </if>
+            <if test="dbServerName != null">
+                db_server_name = #{dbServerName,jdbcType=VARCHAR},
+            </if>
+            <if test="dbPassword != null">
+                db_password = #{dbPassword,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=DATE},
+            </if>
+            <if test="createPersonId != null">
+                create_person_id = #{createPersonId,jdbcType=VARCHAR},
+            </if>
+            <if test="dbUser != null">
+                db_user = #{dbUser,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where dbinfo_id = #{dbinfoId,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.lixy.dataextract.entity.SysDBInfo">
+    update sys_dbinfo
+    set db_name = #{dbName,jdbcType=VARCHAR},
+      db_type = #{dbType,jdbcType=VARCHAR},
+      area_type = #{areaType,jdbcType=INTEGER},
+      db_ip = #{dbIp,jdbcType=VARCHAR},
+      db_port = #{dbPort,jdbcType=VARCHAR},
+      db_server_name = #{dbServerName,jdbcType=VARCHAR},
+      db_password = #{dbPassword,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=DATE},
+      create_person_id = #{createPersonId,jdbcType=VARCHAR},
+      db_user = #{dbUser,jdbcType=VARCHAR}
+    where dbinfo_id = #{dbinfoId,jdbcType=INTEGER}
+  </update>
+
+    <!--获取所有数据库连接-->
+    <select id="selectAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_dbinfo
+    </select>
+
+    <select id="filterListByKeyword" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_dbinfo
+        <where>
+            1=1
+            <if test="dbType != null and dbType !=''">
+                AND db_type = #{dbType,jdbcType=VARCHAR}
+            </if>
+            <if test="dbName != null and dbName != ''">
+                AND db_server_name LIKE CONCAT('%', #{dbName},'%')
+            </if>
+        </where>
+        ORDER BY
+        create_time DESC
+        limit #{pageIndex,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER};
+    </select>
+
+    <select id="countWithKeyword" resultType="java.lang.Integer">
+        select
+        count(1)
+        from sys_dbinfo
+        <where>
+            1=1
+            <if test="dbType != null and dbType !=''">
+                AND db_type = #{dbType,jdbcType=VARCHAR}
+            </if>
+            <if test="dbName != null and dbName != ''">
+                AND db_server_name LIKE CONCAT('%', #{dbName},'%')
+            </if>
+        </where>
+    </select>
+
+    <!--根据区域类型获取配置对象集合-->
+    <select id="selectListByAreaType" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_dbinfo
+    </select>
+
+    <!--根据服务连接进行筛选-->
+    <select id="findListByKeyword" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_dbinfo
+        <where>
+            area_type=3
+            <if test="dbName != null and dbName != ''">
+                AND db_name LIKE CONCAT('%', #{dbName},'%')
+            </if>
+        </where>
+        ORDER BY
+        create_time DESC
+    </select>
+
+    <select id="findDbPage" resultMap="BaseResultMap" parameterType="com.lixy.dataextract.vo.DbSearchVo">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_dbinfo
+        where 1=1
+        <if test="dbName">
+            and db_name like  concat(#{dbName},'%')
+        </if>
+        <if test="dbType">
+            and db_type =  #{dbType}
+        </if>
+        order by create_time asc
+    </select>
+</mapper>

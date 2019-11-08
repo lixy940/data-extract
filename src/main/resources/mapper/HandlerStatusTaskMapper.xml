@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lixy.dataextract.dao.HandlerStatusTaskMapper">
+    <resultMap id="BaseResultMap" type="com.lixy.dataextract.entity.HandlerStatusTask">
+        <id column="handler_id" jdbcType="INTEGER" property="handlerId"/>
+        <result column="task_id" jdbcType="INTEGER" property="taskId"/>
+        <result column="begin_index" jdbcType="VARCHAR" property="beginIndex"/>
+        <result column="end_index" jdbcType="VARCHAR" property="endIndex"/>
+        <result column="status" jdbcType="TINYINT" property="status"/>
+        <result column="execute_result" jdbcType="TINYINT" property="executeResult"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    handler_id, task_id, begin_index, end_index, status,execute_result, create_time, update_time
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from handler_task_status
+        where handler_id = #{handlerId,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from handler_task_status
+    where handler_id = #{handlerId,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="com.lixy.dataextract.entity.HandlerStatusTask">
+    insert into handler_task_status (handler_id, task_id, status)
+    values (#{handlerId,jdbcType=INTEGER}, #{taskId,jdbcType=INTEGER}, #{status,jdbcType=TINYINT})
+  </insert>
+    <insert id="insertSelective" parameterType="com.lixy.dataextract.entity.HandlerStatusTask" useGeneratedKeys="true"
+            keyColumn="handler_id" keyProperty="handlerId">
+        insert into handler_task_status
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="handlerId != null">
+                handler_id,
+            </if>
+            <if test="taskId != null">
+                task_id,
+            </if>
+            <if test="beginIndex != null">
+                begin_index,
+            </if>
+            <if test="endIndex != null">
+                end_index,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="handlerId != null">
+                #{handlerId,jdbcType=INTEGER},
+            </if>
+            <if test="taskId != null">
+                #{taskId,jdbcType=INTEGER},
+            </if>
+            <if test="beginIndex != null">
+                #{beginIndex},
+            </if>
+            <if test="endIndex != null">
+                #{endIndex},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=TINYINT},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateHandlerBySelective" parameterType="com.lixy.dataextract.entity.HandlerStatusTask">
+        update handler_task_status
+        <set>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="executeResult != null">
+                execute_result = #{executeResult},
+            </if>
+            <if test="beginIndex != null">
+                begin_index = #{beginIndex},
+            </if>
+            <if test="endIndex != null">
+                end_index = #{endIndex},
+            </if>
+        </set>
+        where handler_id = #{handlerId,jdbcType=INTEGER}
+    </update>
+
+    <select id="findTaskStatusPage" resultType="com.lixy.dataextract.vo.TaskStatusShowVo"
+            parameterType="com.lixy.dataextract.vo.TaskStatusSearchVo">
+        select
+        hts.handler_id as handlerId,
+        ctr.table_name as tableName,
+        hts.status as status,
+        hts.execute_result as executeResult,
+        hts.begin_index as beginIndex,
+        hts.end_index as endIndex,
+        sd.db_name as dbName,
+        hts.create_time as createTime
+        from handler_task_status hts
+        left join handler_task ht on hts.task_id = ht.task_id
+        left join commit_table_record ctr on ht.commit_id=ctr.commit_id
+        left join sys_dbinfo sd on ctr.db_id=sd.dbinfo_id
+        where 1=1
+        <if test="tableName">
+            and ctr.table_name like concat(#{tableName},'%')
+        </if>
+        <if test="dbId">
+            and ctr.db_id = #{dbId}
+        </if>
+        <if test="status">
+            and hts.status = #{status}
+        </if>
+        order by hts.status, hts.create_time asc
+    </select>
+    <select id="selectLastRecordByTaskId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from handler_task_status
+        where task_id = #{taskId}
+        order by create_time desc
+        limit 1
+    </select>
+
+    <delete id="deleteByTaskId">
+    delete from handler_task_status
+    where task_id = #{taskId}
+  </delete>
+</mapper>
