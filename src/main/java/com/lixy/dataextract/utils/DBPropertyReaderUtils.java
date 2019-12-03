@@ -23,6 +23,7 @@ public class DBPropertyReaderUtils {
                 String keyStr = key.toString();
                 propertiesMap.put(keyStr, new String(properties.getProperty(keyStr).getBytes("ISO-8859-1"), "utf-8"));
             }
+            System.out.println("ddd");
         } catch (Exception e) {
             throw new RuntimeException("initialize properties-reader failed", e);
         }
