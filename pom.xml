@@ -24,7 +24,7 @@
         <swagger.version>2.7.0</swagger.version>
         <pagehelper.version>1.2.5</pagehelper.version>
         <oracle-driver-ojdbc6.version>12.1.0.1</oracle-driver-ojdbc6.version>
-        <postgresql.version>42.1.4</postgresql.version>
+        <postgresql.version>42.4.1</postgresql.version>
     </properties>
 
     <dependencies>
